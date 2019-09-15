@@ -52,24 +52,23 @@ docker-ce:
 1. Clone the repository:  
 `git clone https://github.com/RafaelMiquelino/low_mem_mysql.git`
 
+### Configure MySQL environment variables
+1. Set your mysql username and password parameters as environment variables:  
+`export MYSQL_USER=YOUR_USERNAME` `export MYSQL_ROOT_PASSWORD=YOUR_ROOT_PASSWORD` `export MYSQL_PASSWORD=YOUR_USER_PASSWORD` `export MYSQL_DATABASE=YOUR_DATABASE_NAME`
+2. Alternatively you can set all these variables in .env file and export all at once on the system startup by adding the following command to your .bashrc:  
+`export $(<PATH_TO_THE_REPOSITORY/.env)`
+
 ### Restore the database
 1. In the machine and the respective folder where the backup is located, transfer the backup file to the VPS:  
 `rsync -avzhe ssh ./backup.sql user@VPS_ip:~/backup.sql`
 2. Connect to the VPS via SSH:  
 `ssh user@VPS_ip`
 2. Step into the clonned repository:  
-`cd low_mem_mysql`
-2. Set your mysql username and password parameters as environment variables:  
-`export MYSQL_USER=YOUR_USERNAME` `export MYSQL_ROOT_PASSWORD=YOUR_ROOT_PASSWORD` `export MYSQL_PASSWORD=YOUR_USER_PASSWORD` `export MYSQL_DATABASE=YOUR_DATABASE_NAME`
-2. Alternatively you can set all these variables in .env file and export all at once on the system startup by adding the following command to your .bashrc:  
-`export $(<PATH_TO_THE_REPOSITORY/.env)`
+`cd traccar-server`
 2. Run the MySQL database:  
 `docker-compose up -d`
 2. Check if everything is working via the commands:  
 `docker-compose ps` or `docker ps`  
-`docker-compose logs`
+`docker-compose logs` to check the logs
 3. Transfer the last backup to the database:  
-`cat ~/backup.sql | docker exec -i db /usr/bin/mysql -u user --password=password database`
-3. To Transfer the last backup to the database:  
-`docker exec -it db bash`  
-`mysql -uUSER_NAME -p`
+`docker exec -i db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < ~/backup.sql`
