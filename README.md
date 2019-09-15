@@ -37,18 +37,20 @@ docker-ce:
 - For more info, visit: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04
 ### Install Docker Compose
 1. We'll check the current release and if necessary, update it in the command below:  
-`ssudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`
+`sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`
 2. Next we'll set the permissions:  
 `sudo chmod +x /usr/local/bin/docker-compose`
 3. Then we'll verify that the installation was successful by checking the version:  
 `docker-compose -v`
+3. Restart the machine:  
+`sudo reboot`
 
 - For more info, visit: https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04
 ### Install the repository into the VPS
-1. Create a new directory in a common place:  
-`sudo mkdir /low_mem_mysql`
+1. Create a new `opt` directory in a common place if not yet available:  
+`sudo mkdir /opt`
 1. Step into the just created folder:  
-`cd /low_mem_mysql/`
+`cd /opt/`
 1. Clone the repository:  
 `git clone https://github.com/RafaelMiquelino/low_mem_mysql.git`
 
@@ -64,7 +66,7 @@ docker-ce:
 2. Connect to the VPS via SSH:  
 `ssh user@VPS_ip`
 2. Step into the clonned repository:  
-`cd traccar-server`
+`cd /opt/low_mem_mysql`
 2. Run the MySQL database:  
 `docker-compose up -d`
 2. Check if everything is working via the commands:  
@@ -72,3 +74,6 @@ docker-ce:
 `docker-compose logs` to check the logs
 3. Transfer the last backup to the database:  
 `docker exec -i db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < ~/backup.sql`
+4. Connect to the database inside the container:  
+`docker exec -it db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"'`
+
